@@ -1,0 +1,7 @@
+<button type="button" mat-raised-button componentLoaderTarget="example-a">example A</button>
+<button type="button" mat-raised-button componentLoaderTarget="example-b">example B</button>
+<button type="button" mat-raised-button componentLoaderTarget="example-home">example Home</button>
+
+<p>loading: {{ (loading$ | async) ? 'true' : 'false' }}</p>
+
+<ng-template componentLoaderOutlet></ng-template>
