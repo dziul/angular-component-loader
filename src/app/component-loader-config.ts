@@ -2,18 +2,23 @@ import { LoadTarget } from './shared/component-loader/component-loader.model';
 
 const componentLoaderConfig: LoadTarget[] = [
   {
-    target: 'example-a',
-    component: () => import('./example-a/example-a.component').then((m) => m.ExampleAComponent),
+    target: 'app-example-a',
+    component: () => import('./example-a/example-a.module').then((m) => m.ExampleAModule),
   },
   {
-    target: 'example-b',
+    target: 'app-example-b',
     component: () => import('./example-b/example-b.component').then((m) => m.ExampleBComponent),
   },
   {
-    target: 'example-home',
+    target: 'app-example-home',
     component: () =>
       import('./example-home/example-home.component').then((m) => m.ExampleHomeComponent),
   },
 ];
 
 export default componentLoaderConfig;
+
+/**
+ * selector : string
+ * load: () => Promise<Type<any>>   -> component ou module
+ */

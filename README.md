@@ -1,13 +1,14 @@
 #### Referências
 
 - [Loading Components Dynamically in Angular 9 with Ivy / This Dot Labs](https://labs.thisdot.co/blog/loading-components-dynamically-in-angular-9-with-ivy)
+  - [loading module dynamic component](https://stackoverflow.com/questions/51404570/angular-how-to-use-shared-modules-in-a-dynamic-component)
 - [Dynamic component loader / Angular](https://angular.io/guide/dynamic-component-loader)
 - [Angular 8 com suporte ao Typescript 3.7](https://github.com/angular/angular-cli/issues/16071)
   - [Alternativo](https://medium.com/@andreizhamoida/typescript-3-7-1106a532e92c)
 
-# AngularDynamicComponentLoader
+---
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.28.
+> This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.28.
 
 ## Development server
 

@@ -10,7 +10,7 @@ export class ExampleAComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit() {
-    console.log('Initiad - component Example-a');
+    console.log('Initialed - component Example-a');
   }
   ngOnDestroy() {
     console.log('Destroyed - component Example-a');

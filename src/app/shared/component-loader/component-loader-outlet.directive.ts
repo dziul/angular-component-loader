@@ -12,7 +12,7 @@ export class ComponentLoaderOutletDirective implements OnInit, OnDestroy {
 
   constructor(
     public viewContainerRef: ViewContainerRef,
-    private componentLoaderService: ComponentLoaderService
+    public componentLoaderService: ComponentLoaderService
   ) {}
 
   ngOnInit() {

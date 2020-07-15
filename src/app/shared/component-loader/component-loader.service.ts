@@ -1,6 +1,16 @@
-import { ComponentFactoryResolver, Injectable, ViewContainerRef } from '@angular/core';
+import {
+  ApplicationModule,
+  Compiler,
+  ComponentFactoryResolver,
+  Injectable,
+  NgModule,
+  NgModuleDecorator,
+  NgModuleFactory,
+  Type,
+  ViewContainerRef,
+} from '@angular/core';
 import { from, Observable, Subject } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, endWith, map, mergeMap, tap } from 'rxjs/operators';
 import { LoadTarget } from './component-loader.model';
 
 @Injectable({
@@ -11,18 +21,24 @@ export class ComponentLoaderService {
   private component$ = new Subject<Observable<any>>();
   private loading$ = new Subject<boolean>();
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
+  constructor(
+    private compiler: Compiler,
+    private componentFactoryResolver: ComponentFactoryResolver // private moduleFactory: NgModuleFactory<any>
+  ) {}
 
   prepare(viewContainerRef: ViewContainerRef, componentLoader = this.component$) {
     return componentLoader.pipe(
-      tap(() => {
+      tap((e) => {
+        console.log('loading started');
         this.loading$.next(true);
         viewContainerRef.clear(); // limpar viewContainerRef)
       }),
-      mergeMap((component) => component),
-      map((component) => this.componentFactoryResolver.resolveComponentFactory(component)),
-      map((componentFactory) => viewContainerRef.createComponent(componentFactory)),
-      tap(() => this.loading$.next(false))
+      mergeMap((load) => load),
+      map((factory) => viewContainerRef.createComponent(factory)),
+      tap(() => {
+        console.log('loading ended');
+        this.loading$.next(false);
+      })
     );
   }
 
@@ -34,7 +50,21 @@ export class ComponentLoaderService {
       function notFound() {
         throw new Error(`Component Loader: Load ${target} not found`);
       };
-    this.component$.next(from(nextLoad()));
+    const nextLoad$: Observable<any> = from(nextLoad()).pipe(
+      map((load) => this.parseModuleOrComponent(load, target))
+    );
+    this.component$.next(nextLoad$);
+  }
+
+  private parseModuleOrComponent(load: Type<any>, selector: string) {
+    if (!load.hasOwnProperty('ngModuleDef')) {
+      return this.componentFactoryResolver.resolveComponentFactory(load);
+    }
+
+    const module = this.compiler.compileModuleAndAllComponentsSync(load);
+    return module.componentFactories.find((component) => {
+      return component.selector === selector;
+    });
   }
 
   attach(collection: LoadTarget[]) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-example-b',
@@ -9,7 +9,7 @@ export class ExampleBComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit() {
-    console.log('Initiad - component Example-b');
+    console.log('Initialed - component Example-b');
   }
   ngOnDestroy() {
     console.log('Destroyed - component Example-b');
