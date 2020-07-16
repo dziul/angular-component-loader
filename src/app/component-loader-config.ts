@@ -1,16 +1,16 @@
-import { LoadTarget } from './shared/component-loader/component-loader.model';
+import { LoadSelector } from './shared/component-loader/component-loader.model';
 
-const componentLoaderConfig: LoadTarget[] = [
+const componentLoaderConfig: LoadSelector[] = [
   {
-    target: 'app-example-a',
+    selector: 'app-example-a',
     component: () => import('./example-a/example-a.module').then((m) => m.ExampleAModule),
   },
   {
-    target: 'app-example-b',
+    selector: 'app-example-b',
     component: () => import('./example-b/example-b.component').then((m) => m.ExampleBComponent),
   },
   {
-    target: 'app-example-home',
+    selector: 'app-example-home',
     component: () =>
       import('./example-home/example-home.component').then((m) => m.ExampleHomeComponent),
   },

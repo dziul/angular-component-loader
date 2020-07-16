@@ -1,23 +1,19 @@
 import {
-  ApplicationModule,
   Compiler,
   ComponentFactoryResolver,
   Injectable,
-  NgModule,
-  NgModuleDecorator,
-  NgModuleFactory,
   Type,
   ViewContainerRef,
 } from '@angular/core';
 import { from, Observable, Subject } from 'rxjs';
-import { concatMap, endWith, map, mergeMap, tap } from 'rxjs/operators';
-import { LoadTarget } from './component-loader.model';
+import { map, mergeMap, tap } from 'rxjs/operators';
+import { LoadSelector } from './component-loader.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ComponentLoaderService {
-  private collection: LoadTarget[] = [];
+  private collection: LoadSelector[] = [];
   private component$ = new Subject<Observable<any>>();
   private loading$ = new Subject<boolean>();
 
@@ -42,21 +38,21 @@ export class ComponentLoaderService {
     );
   }
 
-  load(target: string) {
-    const loader = this.collection.filter((component) => component.target === target);
+  load(selector: string) {
+    const loader = this.collection.filter((component) => component.selector === selector);
     const loaderFirst = loader.shift(); // caso tenha duplicados, pega apenas o primeiro
     const nextLoad =
       loaderFirst?.component ||
       function notFound() {
-        throw new Error(`Component Loader: Load ${target} not found`);
+        throw new Error(`Component Loader: Load ${selector} not found`);
       };
     const nextLoad$: Observable<any> = from(nextLoad()).pipe(
-      map((load) => this.parseModuleOrComponent(load, target))
+      map((load) => this.parseFactory(load, selector))
     );
     this.component$.next(nextLoad$);
   }
 
-  private parseModuleOrComponent(load: Type<any>, selector: string) {
+  private parseFactory(load: Type<any>, selector: string) {
     if (!load.hasOwnProperty('ngModuleDef')) {
       return this.componentFactoryResolver.resolveComponentFactory(load);
     }
@@ -67,7 +63,7 @@ export class ComponentLoaderService {
     });
   }
 
-  attach(collection: LoadTarget[]) {
+  attach(collection: LoadSelector[]) {
     this.collection = [...this.collection, ...collection];
   }
 

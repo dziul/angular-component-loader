@@ -1,6 +1,6 @@
-export interface LoadTarget<T = any> {
-  target?: string;
-  component?: LoadTargetPropComponent<T>;
+export interface LoadSelector<T = any> {
+  selector?: string;
+  component?: LoadSelectorPropComponent<T>;
 }
 
-export type LoadTargetPropComponent<T = any> = () => Promise<T>;
+export type LoadSelectorPropComponent<T = any> = () => Promise<T>;
