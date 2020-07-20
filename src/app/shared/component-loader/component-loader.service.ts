@@ -2,8 +2,10 @@ import {
   Compiler,
   ComponentFactoryResolver,
   Injectable,
+  Injector,
   Type,
   ViewContainerRef,
+  ɵcreateInjector as createInjector,
 } from '@angular/core';
 import { from, Observable, Subject } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
@@ -19,48 +21,61 @@ export class ComponentLoaderService {
 
   constructor(
     private compiler: Compiler,
+    private injector: Injector,
     private componentFactoryResolver: ComponentFactoryResolver // private moduleFactory: NgModuleFactory<any>
   ) {}
 
   prepare(viewContainerRef: ViewContainerRef, componentLoader = this.component$) {
     return componentLoader.pipe(
-      tap((e) => {
-        console.log('loading started');
+      tap(() => {
         this.loading$.next(true);
         viewContainerRef.clear(); // limpar viewContainerRef)
       }),
       mergeMap((load) => load),
-      map((factory) => viewContainerRef.createComponent(factory)),
+      map((factory) => {
+        return viewContainerRef.createComponent(factory);
+      }),
       tap(() => {
-        console.log('loading ended');
         this.loading$.next(false);
       })
     );
   }
 
-  load(selector: string) {
-    const loader = this.collection.filter((component) => component.selector === selector);
-    const loaderFirst = loader.shift(); // caso tenha duplicados, pega apenas o primeiro
-    const nextLoad =
-      loaderFirst?.component ||
-      function notFound() {
-        throw new Error(`Component Loader: Load ${selector} not found`);
-      };
-    const nextLoad$: Observable<any> = from(nextLoad()).pipe(
-      map((load) => this.parseFactory(load, selector))
-    );
-    this.component$.next(nextLoad$);
+  notFoundSelector(selector: string) {
+    throw new Error(`Component Loader: Load ${selector} not found`);
   }
 
-  private parseFactory(load: Type<any>, selector: string) {
-    if (!load.hasOwnProperty('ngModuleDef')) {
-      return this.componentFactoryResolver.resolveComponentFactory(load);
-    }
+  load(selector: string) {
+    const loader = this.collection.filter((component) => component.selector === selector).shift();
 
-    const module = this.compiler.compileModuleAndAllComponentsSync(load);
-    return module.componentFactories.find((component) => {
-      return component.selector === selector;
-    });
+    const next$ = this.resolver(loader);
+
+    this.component$.next(next$);
+  }
+
+  private resolver(loader: LoadSelector) {
+    const hasModule = loader.hasOwnProperty('module');
+
+    if (hasModule) {
+      return from(loader.module()).pipe(
+        map((load: Type<any>) => {
+          const injector = createInjector(load, this.injector);
+          const module = injector.get(load);
+          return this.resolverComponent(loader);
+        }),
+        mergeMap((load) => load)
+      );
+    } else {
+      return this.resolverComponent(loader);
+    }
+  }
+
+  private resolverComponent(loader: LoadSelector) {
+    return from(loader.component()).pipe(
+      map((load) => {
+        return this.componentFactoryResolver.resolveComponentFactory(load);
+      })
+    );
   }
 
   attach(collection: LoadSelector[]) {

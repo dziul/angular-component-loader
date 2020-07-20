@@ -3,7 +3,8 @@ import { LoadSelector } from './shared/component-loader/component-loader.model';
 const componentLoaderConfig: LoadSelector[] = [
   {
     selector: 'app-example-a',
-    component: () => import('./example-a/example-a.module').then((m) => m.ExampleAModule),
+    component: () => import('./example-a/example-a.component').then((m) => m.ExampleAComponent),
+    module: () => import('./example-a/example-a.module').then((m) => m.ExampleAModule),
   },
   {
     selector: 'app-example-b',
@@ -11,8 +12,7 @@ const componentLoaderConfig: LoadSelector[] = [
   },
   {
     selector: 'app-example-home',
-    component: () =>
-      import('./example-home/example-home.component').then((m) => m.ExampleHomeComponent),
+    component: () => import('./example-c/example-c.component').then((m) => m.ExampleCComponent),
   },
 ];
 
