@@ -2,6 +2,8 @@
 
 > A idéia não é substituir o `@angular/router`, mas, uma alternativa caso precise de uma solução simples.
 
+[![Preview](./src/assets/images/preview-static.gif)](https://dziul.github.io/angular-component-loader/)
+
 #### Diretiva ComponentLoaderTarget
 
 Vincula o componente específico
