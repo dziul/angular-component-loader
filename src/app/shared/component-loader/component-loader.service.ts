@@ -1,12 +1,4 @@
-import {
-  Compiler,
-  ComponentFactoryResolver,
-  Injectable,
-  Injector,
-  Type,
-  ViewContainerRef,
-  ɵcreateInjector as createInjector,
-} from '@angular/core';
+import { ComponentFactoryResolver, Injectable, Type, ViewContainerRef } from '@angular/core';
 import { from, Observable, Subject } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { LoadSelector } from './component-loader.model';
@@ -19,11 +11,7 @@ export class ComponentLoaderService {
   private component$ = new Subject<Observable<any>>();
   private loading$ = new Subject<boolean>();
 
-  constructor(
-    private compiler: Compiler,
-    private injector: Injector,
-    private componentFactoryResolver: ComponentFactoryResolver // private moduleFactory: NgModuleFactory<any>
-  ) {}
+  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
   prepare(viewContainerRef: ViewContainerRef, componentLoader = this.component$) {
     return componentLoader.pipe(
@@ -59,8 +47,8 @@ export class ComponentLoaderService {
     if (hasModule) {
       return from(loader.module()).pipe(
         map((load: Type<any>) => {
-          const injector = createInjector(load, this.injector);
-          const module = injector.get(load);
+          // const injector = createInjector(load, this.injector);
+          // const module = injector.get(load);
           return this.resolverComponent(loader);
         }),
         mergeMap((load) => load)

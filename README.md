@@ -1,3 +1,77 @@
+### Carregamento dinâmico de componentes
+
+> A idéia não é substituir o `@angular/router`, mas, uma alternativa caso precise de uma solução simples.
+
+#### Diretiva ComponentLoaderTarget
+
+Vincula o componente específico
+
+`componentLoaderTarget:string`
+
+```html
+<button type="button" componentLoaderTarget="string">Example</button>
+```
+
+#### Diretiva ComponentLoaderOutlet
+
+Atua como espaço reservado que o Angular preenche dinamicamente com base no `componentLoaderTarget`.
+
+```html
+<ng-template componentLoaderOutlet></ng-template>
+```
+
+#### Iniciando projeto
+
+exemplo, de arquivo de configuração dos componentes
+
+```ts
+//component-loader-config.ts
+import { LoadSelector } from './shared/component-loader/component-loader.model';
+
+const componentLoaderConfig: LoadSelector[] = [
+  {
+    // exemplo caso precise carregar modulo
+    selector: 'app-example-a',
+    component: () => import('./example-a/example-a.component').then((m) => m.ExampleAComponent),
+    module: () => import('./example-a/example-a.module').then((m) => m.ExampleAModule),
+  },
+  {
+    selector: 'app-example-b',
+    component: () => import('./example-b/example-b.component').then((m) => m.ExampleBComponent),
+  },
+  {
+    selector: 'app-example-c',
+    component: () => import('./example-c/example-c.component').then((m) => m.ExampleCComponent),
+  },
+];
+
+export default componentLoaderConfig;
+```
+
+Anexando ao `ComponentLoaderService`:
+
+```ts
+// app.component.ts
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ComponentLoaderService } from './shared/component-loader/component-loader.service';
+
+import { Observable } from 'rxjs';
+import componentLoaderConfig from './component-loader-config';
+
+@Component({
+  selector: 'app-root',
+  ...
+})
+export class AppComponent implements OnInit {
+  loading$: Observable<boolean>;
+  constructor(private componentLoader: ComponentLoaderService) {}
+  ngOnInit() {
+    this.componentLoader.attach(componentLoaderConfig);
+    this.loading$ = this.componentLoader.loading();
+  }
+}
+```
+
 #### Referências
 
 - [Loading Components Dynamically in Angular 9 with Ivy / This Dot Labs](https://labs.thisdot.co/blog/loading-components-dynamically-in-angular-9-with-ivy)

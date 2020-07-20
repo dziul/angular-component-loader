@@ -11,14 +11,9 @@ const componentLoaderConfig: LoadSelector[] = [
     component: () => import('./example-b/example-b.component').then((m) => m.ExampleBComponent),
   },
   {
-    selector: 'app-example-home',
+    selector: 'app-example-c',
     component: () => import('./example-c/example-c.component').then((m) => m.ExampleCComponent),
   },
 ];
 
 export default componentLoaderConfig;
-
-/**
- * selector : string
- * load: () => Promise<Type<any>>   -> component ou module
- */
