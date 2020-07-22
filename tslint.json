@@ -1,35 +1,35 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "ordered-imports": [
-    true,
-    {
-      "module-source-path": "full",
-      "grouped-imports": true,
-      "groups": [
-        {
-          "name": "angular",
-          "match": "^@angular.*",
-          "order": 1
-        },
-        {
-          "name": "internal modules",
-          "match": "^@app.*",
-          "order": 3
-        },
-        {
-          "name": "relative dir",
-          "match": "^[.].*",
-          "order": 4
-        },
-        {
-          "name": "node_modules",
-          "match": ".*",
-          "order": 2
-        }
-      ]
-    }
-  ],
   "rules": {
+    "ordered-imports": [
+      true,
+      {
+        "module-source-path": "full",
+        "grouped-imports": true,
+        "groups": [
+          {
+            "name": "angular",
+            "match": "^@angular.*",
+            "order": 1
+          },
+          {
+            "name": "internal modules",
+            "match": "^@app.*",
+            "order": 3
+          },
+          {
+            "name": "relative dir",
+            "match": "^[.].*",
+            "order": 4
+          },
+          {
+            "name": "node_modules",
+            "match": ".*",
+            "order": 2
+          }
+        ]
+      }
+    ],
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {
@@ -48,12 +48,7 @@
     "member-ordering": [
       true,
       {
-        "order": [
-          "static-field",
-          "instance-field",
-          "static-method",
-          "instance-method"
-        ]
+        "order": ["static-field", "instance-field", "static-method", "instance-method"]
       }
     ],
     "no-consecutive-blank-lines": false,
